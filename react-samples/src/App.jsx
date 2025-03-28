@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Table from './comps/TableGrok';
-import Tango from './tasks/TangoGrok';
+//import Tango from './tasks/TangoGrok';
+import Animation from './comps/Animation';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -30,7 +31,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <Tango />
+      <Animation />
     </>
   )
 }

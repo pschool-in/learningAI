@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Shooter</title>
+    <style>
+      body {
+        text-align: center;
+        background-color: #eef;
+      }
+      svg {
+        background-color: white;
+        border: 2px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bubble Shooter</h1>
+    <svg id="gameCanvas" width="600" height="500"></svg>
+    <script>
+      const svgNS = "http://www.w3.org/2000/svg";
+      const canvas = document.getElementById("gameCanvas");
+      const bubbles = [];
+      const colors = ["red", "blue", "green", "purple", "orange"];
+
+      function createBubble(cx, cy, color) {
+        const bubble = document.createElementNS(svgNS, "circle");
+        bubble.setAttribute("cx", cx);
+        bubble.setAttribute("cy", cy);
+        bubble.setAttribute("r", 20);
+        bubble.setAttribute("fill", color);
+        canvas.appendChild(bubble);
+        return bubble;
+      }
+
+      function setupBubbles() {
+        for (let i = 0; i < 5; i++) {
+          for (let j = 0; j < 10; j++) {
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            let bubble = createBubble(50 + j * 50, 50 + i * 50, color);
+            bubbles.push({ element: bubble, color });
+          }
+        }
+      }
+
+      function shootBubble(event) {
+        let x = event.offsetX;
+        let y = event.offsetY;
+        let color = colors[Math.floor(Math.random() * colors.length)];
+        let bubble = createBubble(300, 450, color);
+        let angle = Math.atan2(y - 450, x - 300);
+        let vx = Math.cos(angle) * 5;
+        let vy = Math.sin(angle) * 5;
+
+        function moveBubble() {
+          let cx = parseFloat(bubble.getAttribute("cx")) + vx;
+          let cy = parseFloat(bubble.getAttribute("cy")) + vy;
+          bubble.setAttribute("cx", cx);
+          bubble.setAttribute("cy", cy);
+
+          for (let i = 0; i < bubbles.length; i++) {
+            let b = bubbles[i].element;
+            let dx = cx - parseFloat(b.getAttribute("cx"));
+            let dy = cy - parseFloat(b.getAttribute("cy"));
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 40) {
+              bubble.remove();
+              b.remove();
+              bubbles.splice(i, 1);
+              return;
+            }
+          }
+
+          if (cy > 0) {
+            requestAnimationFrame(moveBubble);
+          } else {
+            bubble.remove();
+          }
+        }
+        moveBubble();
+      }
+
+      setupBubbles();
+      canvas.addEventListener("click", shootBubble);
+    </script>
+  </body>
+</html>
